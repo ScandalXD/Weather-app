@@ -1,9 +1,18 @@
 import React, { createContext, useState, useContext } from 'react';
 
+interface ForecastItem {
+  dt_txt: string;
+  temp: number;
+  icon: string;
+  description: string;
+}
+
 interface WeatherData {
+  city: string;
   temperature: number;
   description: string;
-  city: string;
+  icon: string;
+  forecast: ForecastItem[];
 }
 
 interface WeatherContextType {
@@ -28,3 +37,4 @@ export const useWeather = () => {
   if (!context) throw new Error('useWeather must be used inside WeatherProvider');
   return context;
 };
+
