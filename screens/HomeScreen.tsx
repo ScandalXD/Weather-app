@@ -20,7 +20,7 @@ type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'H
 
 const HomeScreen = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
-  const { setWeather, weather } = useWeather();
+  const { setWeather } = useWeather();
 
   const [loading, setLoading] = useState(false);
   const [cityName, setCityName] = useState('');
@@ -31,7 +31,12 @@ const HomeScreen = () => {
     try {
       setLoading(true);
       const data = await getWeather();
-      setWeather({ ...data.current, forecast: data.forecast });
+      setWeather({
+        ...data.current,
+        forecast: data.forecast,
+        fromSearch: false,
+        lastCity: '',
+      });
       navigation.navigate('Details');
     } catch (error) {
       Alert.alert('Ошибка', 'Не удалось получить данные о погоде.');
@@ -47,7 +52,12 @@ const HomeScreen = () => {
     try {
       setLoading(true);
       const data = await getWeatherByCity(city);
-      setWeather({ ...data.current, forecast: data.forecast });
+      setWeather({
+        ...data.current,
+        forecast: data.forecast,
+        fromSearch: true,
+        lastCity: city,
+      });
       await addCityToHistory(city);
       const updated = await getCityHistory();
       setHistory(updated);
@@ -65,7 +75,12 @@ const HomeScreen = () => {
       setInputFocused(false);
       setLoading(true);
       const data = await getWeatherByCity(city);
-      setWeather({ ...data.current, forecast: data.forecast });
+      setWeather({
+        ...data.current,
+        forecast: data.forecast,
+        fromSearch: true,
+        lastCity: city,
+      });
       navigation.navigate('Details');
     } catch {
       Alert.alert('Ошибка', 'Не удалось загрузить город');
@@ -79,10 +94,17 @@ const HomeScreen = () => {
       try {
         setLoading(true);
         const data = await getWeather();
-        setWeather({ ...data.current, forecast: data.forecast });
+        setWeather({
+          ...data.current,
+          forecast: data.forecast,
+          fromSearch: false,
+          lastCity: '',
+        });
 
         const historyData = await getCityHistory();
         setHistory(historyData);
+
+        navigation.navigate('Details');
       } catch (e) {
         console.log('Нет кешированных данных');
       } finally {
@@ -131,24 +153,11 @@ const HomeScreen = () => {
       </View>
 
       <Button title="Найти" onPress={handleCitySearch} />
-
       <View style={{ height: 20 }} />
       <Button title="Обновить по геолокации" onPress={fetchWeather} />
 
-      {loading ? (
+      {loading && (
         <ActivityIndicator size="large" color="#007aff" style={{ marginTop: 20 }} />
-      ) : (
-        weather && (
-          <View style={globalStyles.info}>
-            <Text style={[globalStyles.label, { color: '#000' }]}>Город: {weather.city}</Text>
-            <Text style={[globalStyles.label, { color: '#000' }]}>
-              Температура: {Math.round(weather.temperature)}°C
-            </Text>
-            <Text style={[globalStyles.label, { color: '#000' }]}>
-              Описание: {weather.description}
-            </Text>
-          </View>
-        )
       )}
     </View>
   );

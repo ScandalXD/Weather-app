@@ -13,6 +13,7 @@ export const getWeather = async () => {
 
     const location = await Location.getCurrentPositionAsync({});
     const { latitude, longitude } = location.coords;
+
     const currentUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${OPEN_WEATHER_API_KEY}&units=metric&lang=ru`;
     const currentRes = await axios.get(currentUrl);
 
@@ -24,6 +25,7 @@ export const getWeather = async () => {
     };
 
     await AsyncStorage.setItem(CURRENT_KEY, JSON.stringify(current));
+
     const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${OPEN_WEATHER_API_KEY}&units=metric&lang=ru`;
     const forecastRes = await axios.get(forecastUrl);
 
@@ -55,24 +57,31 @@ export const getWeather = async () => {
   }
 };
 
-
 export const getWeatherByCity = async (city: string) => {
   try {
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
-      city
-    )}&appid=${OPEN_WEATHER_API_KEY}&units=metric&lang=ru`;
-    const response = await axios.get(url);
+    const currentUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${OPEN_WEATHER_API_KEY}&units=metric&lang=ru`;
+    const currentRes = await axios.get(currentUrl);
 
     const current = {
-      city: response.data.name,
-      temperature: response.data.main.temp,
-      description: response.data.weather[0].description,
-      icon: response.data.weather[0].icon,
+      city: currentRes.data.name,
+      temperature: currentRes.data.main.temp,
+      description: currentRes.data.weather[0].description,
+      icon: currentRes.data.weather[0].icon,
     };
 
-    return { current, forecast: [] }; 
+    const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${OPEN_WEATHER_API_KEY}&units=metric&lang=ru`;
+    const forecastRes = await axios.get(forecastUrl);
+
+    const forecastList = forecastRes.data.list.map((entry: any) => ({
+      dt_txt: entry.dt_txt,
+      temp: entry.main.temp,
+      icon: entry.weather[0].icon,
+      description: entry.weather[0].description,
+    }));
+
+    return { current, forecast: forecastList };
   } catch (error) {
-    console.error('Ошибка поиска города:', error);
+    console.error('Ошибка загрузки погоды по городу:', error);
     throw error;
   }
 };

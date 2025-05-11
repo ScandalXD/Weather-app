@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 interface ForecastItem {
   dt_txt: string;
@@ -12,17 +12,19 @@ interface WeatherData {
   temperature: number;
   description: string;
   icon: string;
-  forecast: ForecastItem[];
+  forecast?: ForecastItem[];
+  fromSearch?: boolean;
+  lastCity?: string;
 }
 
-interface WeatherContextType {
+interface WeatherContextProps {
   weather: WeatherData | null;
-  setWeather: (data: WeatherData) => void;
+  setWeather: React.Dispatch<React.SetStateAction<WeatherData | null>>;
 }
 
-const WeatherContext = createContext<WeatherContextType | undefined>(undefined);
+const WeatherContext = createContext<WeatherContextProps | undefined>(undefined);
 
-export const WeatherProvider = ({ children }: { children: React.ReactNode }) => {
+export const WeatherProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [weather, setWeather] = useState<WeatherData | null>(null);
 
   return (
@@ -32,9 +34,10 @@ export const WeatherProvider = ({ children }: { children: React.ReactNode }) => 
   );
 };
 
-export const useWeather = () => {
+export const useWeather = (): WeatherContextProps => {
   const context = useContext(WeatherContext);
-  if (!context) throw new Error('useWeather must be used inside WeatherProvider');
+  if (!context) {
+    throw new Error('useWeather must be used within a WeatherProvider');
+  }
   return context;
 };
-
