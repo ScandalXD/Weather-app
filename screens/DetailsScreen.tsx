@@ -8,16 +8,12 @@ import {
   Alert,
 } from 'react-native';
 import { useWeather } from '../contexts/WeatherContext';
-import { useThemeContext } from '../contexts/ThemeContext';
 import ForecastList from '../components/ForecastList';
 import { getWeather } from '../services/weatherService';
 import { globalStyles } from '../style/styles';
 
 const DetailsScreen = () => {
   const { weather, setWeather } = useWeather();
-  const { theme } = useThemeContext();
-  const isDark = theme === 'dark';
-
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = async () => {
@@ -34,13 +30,8 @@ const DetailsScreen = () => {
 
   if (!weather) {
     return (
-      <View
-        style={[
-          globalStyles.centered,
-          { backgroundColor: isDark ? '#000' : '#f0f8ff' },
-        ]}
-      >
-        <Text style={[globalStyles.message, { color: isDark ? '#ccc' : '#888' }]}>
+      <View style={[globalStyles.centered, { backgroundColor: '#f0f8ff' }]}>
+        <Text style={[globalStyles.message, { color: '#888' }]}>
           Нет данных о погоде
         </Text>
       </View>
@@ -51,32 +42,27 @@ const DetailsScreen = () => {
 
   return (
     <ScrollView
-      contentContainerStyle={[
-        globalStyles.detailsContainer,
-        { backgroundColor: isDark ? '#000' : '#f0f8ff' },
-      ]}
+      contentContainerStyle={[globalStyles.detailsContainer, { backgroundColor: '#f0f8ff' }]}
       refreshControl={
         <RefreshControl
           refreshing={refreshing}
           onRefresh={onRefresh}
-          tintColor={isDark ? '#fff' : '#000'}
+          tintColor="#000"
         />
       }
     >
-      <Text style={[globalStyles.city, { color: isDark ? '#fff' : '#000' }]}>
-        {weather.city}
-      </Text>
+      <Text style={[globalStyles.city, { color: '#000' }]}>{weather.city}</Text>
       <Image source={{ uri: iconUrl }} style={globalStyles.icon} />
-      <Text style={[globalStyles.temp, { color: isDark ? '#ffa500' : '#ff8c00' }]}>
+      <Text style={[globalStyles.temp, { color: '#ff8c00' }]}>
         {Math.round(weather.temperature)}°C
       </Text>
-      <Text style={[globalStyles.description, { color: isDark ? '#ddd' : '#000' }]}>
+      <Text style={[globalStyles.description, { color: '#000' }]}>
         {weather.description}
       </Text>
 
       {weather.forecast && weather.forecast.length > 0 && (
         <>
-          <Text style={[globalStyles.subtitle, { color: isDark ? '#fff' : '#000' }]}>
+          <Text style={[globalStyles.subtitle, { color: '#000' }]}>
             Прогноз
           </Text>
           <ForecastList data={weather.forecast.slice(0, 8)} />

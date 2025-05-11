@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import {View, Text, Button, ActivityIndicator, Alert, TextInput,TouchableOpacity,} from 'react-native';
+import {
+  View,
+  Text,
+  Button,
+  ActivityIndicator,
+  Alert,
+  TextInput,
+  TouchableOpacity,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
 import { getWeather, getWeatherByCity } from '../services/weatherService';
 import { useWeather } from '../contexts/WeatherContext';
-import { useThemeContext } from '../contexts/ThemeContext';
 import { addCityToHistory, getCityHistory } from '../services/historyService';
 import { globalStyles } from '../style/styles';
 
@@ -14,8 +21,6 @@ type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'H
 const HomeScreen = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const { setWeather, weather } = useWeather();
-  const { theme, toggleTheme } = useThemeContext();
-  const isDark = theme === 'dark';
 
   const [loading, setLoading] = useState(false);
   const [cityName, setCityName] = useState('');
@@ -93,36 +98,32 @@ const HomeScreen = () => {
   );
 
   return (
-    <View style={[globalStyles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}>
-      <Text style={[globalStyles.title, { color: isDark ? '#fff' : '#000' }]}>
-        🌤 Weather App
-      </Text>
+    <View style={[globalStyles.container, { backgroundColor: '#fff' }]}>
+      <Text style={[globalStyles.title, { color: '#000' }]}>🌤 Weather App</Text>
 
       <View style={{ width: '80%' }}>
         <TextInput
           style={[
             globalStyles.input,
             {
-              backgroundColor: isDark ? '#333' : '#f0f0f0',
-              color: isDark ? '#fff' : '#000',
-              borderColor: isDark ? '#555' : '#ccc',
+              backgroundColor: '#f0f0f0',
+              color: '#000',
+              borderColor: '#ccc',
             },
           ]}
           placeholder="Введите город"
-          placeholderTextColor={isDark ? '#aaa' : '#666'}
+          placeholderTextColor="#666"
           value={cityName}
           onChangeText={setCityName}
           onFocus={() => setInputFocused(true)}
           onBlur={() => setTimeout(() => setInputFocused(false), 200)}
         />
 
-          {inputFocused && cityName.trim().length > 0 && filteredHistory.length > 0 && (
-          <View style={[globalStyles.dropdown, { backgroundColor: isDark ? '#222' : '#fff' }]}>
+        {inputFocused && cityName.trim().length > 0 && filteredHistory.length > 0 && (
+          <View style={[globalStyles.dropdown, { backgroundColor: '#fff' }]}>
             {filteredHistory.map((city, index) => (
               <TouchableOpacity key={index} onPress={() => handleSelectFromHistory(city)}>
-                <Text style={[globalStyles.historyItem, { color: isDark ? '#fff' : '#000' }]}>
-                  {city}
-                </Text>
+                <Text style={[globalStyles.historyItem, { color: '#000' }]}>{city}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -133,25 +134,17 @@ const HomeScreen = () => {
 
       <View style={{ height: 20 }} />
       <Button title="Обновить по геолокации" onPress={fetchWeather} />
-      <View style={{ height: 20 }} />
-      <Button title={`Тема: ${isDark ? 'Тёмная 🌙' : 'Светлая ☀️'}`} onPress={toggleTheme} />
 
       {loading ? (
-        <ActivityIndicator
-          size="large"
-          color={isDark ? '#fff' : '#007aff'}
-          style={{ marginTop: 20 }}
-        />
+        <ActivityIndicator size="large" color="#007aff" style={{ marginTop: 20 }} />
       ) : (
         weather && (
           <View style={globalStyles.info}>
-            <Text style={[globalStyles.label, { color: isDark ? '#fff' : '#000' }]}>
-              Город: {weather.city}
-            </Text>
-            <Text style={[globalStyles.label, { color: isDark ? '#fff' : '#000' }]}>
+            <Text style={[globalStyles.label, { color: '#000' }]}>Город: {weather.city}</Text>
+            <Text style={[globalStyles.label, { color: '#000' }]}>
               Температура: {Math.round(weather.temperature)}°C
             </Text>
-            <Text style={[globalStyles.label, { color: isDark ? '#fff' : '#000' }]}>
+            <Text style={[globalStyles.label, { color: '#000' }]}>
               Описание: {weather.description}
             </Text>
           </View>

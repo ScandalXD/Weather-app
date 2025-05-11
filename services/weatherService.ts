@@ -55,7 +55,7 @@ export const getWeather = async () => {
   }
 };
 
-// 🔍 Новый: Получение погоды по названию города
+
 export const getWeatherByCity = async (city: string) => {
   try {
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
@@ -70,7 +70,7 @@ export const getWeatherByCity = async (city: string) => {
       icon: response.data.weather[0].icon,
     };
 
-    return { current, forecast: [] }; // прогноз можно будет добавить позже
+    return { current, forecast: [] }; 
   } catch (error) {
     console.error('Ошибка поиска города:', error);
     throw error;

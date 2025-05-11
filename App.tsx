@@ -4,7 +4,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './screens/HomeScreen';
 import DetailsScreen from './screens/DetailsScreen';
 import { WeatherProvider } from './contexts/WeatherContext';
-import { ThemeProvider } from './contexts/ThemeContext';
 
 export type RootStackParamList = {
   Home: undefined;
@@ -15,7 +14,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
   return (
-    <ThemeProvider>
+    
       <WeatherProvider>
         <NavigationContainer>
           <Stack.Navigator initialRouteName="Home">
@@ -24,7 +23,7 @@ export default function App() {
           </Stack.Navigator>
         </NavigationContainer>
       </WeatherProvider>
-    </ThemeProvider>
+    
   );
 }
 
