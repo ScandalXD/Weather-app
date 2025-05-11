@@ -3,6 +3,7 @@ import {View, Text, Image, ScrollView, RefreshControl, Alert} from 'react-native
 import { useWeather } from '../contexts/WeatherContext';
 import ForecastList from '../components/ForecastList';
 import { getWeather, getWeatherByCity } from '../services/weatherService';
+import FiveDayForecastBlock from '../components/FiveDayForecastBlock';
 import { globalStyles } from '../style/styles';
 
 const DetailsScreen = () => {
@@ -60,10 +61,14 @@ const DetailsScreen = () => {
       <Text style={[globalStyles.description, { color: '#000' }]}>{weather.description}</Text>
 
       {weather.forecast && weather.forecast.length > 0 && (
-        <>
-          <Text style={[globalStyles.subtitle, { color: '#000' }]}>Прогноз</Text>
-          <ForecastList data={weather.forecast.slice(0, 8)} />
-        </>
+    <>
+      <Text style={[globalStyles.subtitle, { color: '#000' }]}>
+          Прогноз по часам
+      </Text>
+      <ForecastList data={weather.forecast.slice(0, 8)} />
+
+      <FiveDayForecastBlock forecast={weather.forecast} />
+    </>
       )}
     </ScrollView>
   );

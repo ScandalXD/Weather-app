@@ -113,5 +113,13 @@ export const globalStyles = StyleSheet.create({
     fontSize: 12,
     textAlign: 'center',
   },
+
+  dayRow: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  paddingVertical: 8,
+  borderBottomColor: '#ccc',
+  borderBottomWidth: 1,
+},
   
 });
