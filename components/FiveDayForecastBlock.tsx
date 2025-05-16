@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, FlatList } from 'react-native';
+import { View, Text, Image } from 'react-native';
 import { globalStyles } from '../style/styles';
 
 interface ForecastEntry {
@@ -20,6 +20,7 @@ const groupByDay = (forecast: ForecastEntry[]) => {
     if (!days[date]) days[date] = [];
     days[date].push(entry);
   });
+
   return Object.entries(days).map(([date, entries]) => {
     const temps = entries.map(e => e.temp);
     const midday = entries.find(e => e.dt_txt.includes('12:00')) || entries[0];
@@ -35,7 +36,7 @@ const groupByDay = (forecast: ForecastEntry[]) => {
 
 const formatDate = (dateStr: string) => {
   const date = new Date(dateStr);
-  return date.toLocaleDateString('ru-RU', { weekday: 'short' });
+  return date.toLocaleDateString('pl-PL', { weekday: 'short' });
 };
 
 const FiveDayForecastBlock: React.FC<Props> = ({ forecast }) => {
@@ -43,22 +44,19 @@ const FiveDayForecastBlock: React.FC<Props> = ({ forecast }) => {
 
   return (
     <View style={{ width: '100%', marginTop: 30 }}>
-      <Text style={globalStyles.subtitle}>Прогноз на 5 дней</Text>
-      <FlatList
-        data={grouped}
-        keyExtractor={item => item.date}
-        renderItem={({ item }) => (
-          <View style={globalStyles.dayRow}>
-            <Text style={{ width: 70 }}>{formatDate(item.date)}</Text>
-            <Image
-              source={{ uri: `https://openweathermap.org/img/wn/${item.icon}@2x.png` }}
-              style={{ width: 40, height: 40 }}
-            />
-            <Text style={{ width: 80, textAlign: 'center' }}>{Math.round(item.min)}° / {Math.round(item.max)}°</Text>
-            <Text style={{ flex: 1, textAlign: 'right' }}>{item.description}</Text>
-          </View>
-        )}
-      />
+      {grouped.map(item => (
+        <View key={item.date} style={globalStyles.dayRow}>
+          <Text style={{ width: 70 }}>{formatDate(item.date)}</Text>
+          <Image
+            source={{ uri: `https://openweathermap.org/img/wn/${item.icon}@2x.png` }}
+            style={{ width: 40, height: 40 }}
+          />
+          <Text style={{ width: 80, textAlign: 'center' }}>
+            {Math.round(item.min)}° / {Math.round(item.max)}°
+          </Text>
+          <Text style={{ flex: 1, textAlign: 'right' }}>{item.description}</Text>
+        </View>
+      ))}
     </View>
   );
 };

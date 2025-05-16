@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
-  Button,
   ActivityIndicator,
   Alert,
   TextInput,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -37,9 +37,10 @@ const HomeScreen = () => {
         fromSearch: false,
         lastCity: '',
       });
+      setCityName('');
       navigation.navigate('Details');
     } catch (error) {
-      Alert.alert('Ошибка', 'Не удалось получить данные о погоде.');
+      Alert.alert('Błąd', 'Nie udało się pobrać danych pogodowych.');
     } finally {
       setLoading(false);
     }
@@ -61,9 +62,10 @@ const HomeScreen = () => {
       await addCityToHistory(city);
       const updated = await getCityHistory();
       setHistory(updated);
+      setCityName('');
       navigation.navigate('Details');
     } catch (error) {
-      Alert.alert('Ошибка', 'Город не найден.');
+      Alert.alert('Błąd', 'Nie znaleziono miasta.');
     } finally {
       setLoading(false);
     }
@@ -81,9 +83,10 @@ const HomeScreen = () => {
         fromSearch: true,
         lastCity: city,
       });
+      setCityName('');
       navigation.navigate('Details');
     } catch {
-      Alert.alert('Ошибка', 'Не удалось загрузить город');
+      Alert.alert('Błąd', 'Nie udało się załadować miasta.');
     } finally {
       setLoading(false);
     }
@@ -106,7 +109,7 @@ const HomeScreen = () => {
 
         navigation.navigate('Details');
       } catch (e) {
-        console.log('Нет кешированных данных');
+        console.log('Brak danych w pamięci podręcznej');
       } finally {
         setLoading(false);
       }
@@ -120,20 +123,13 @@ const HomeScreen = () => {
   );
 
   return (
-    <View style={[globalStyles.container, { backgroundColor: '#fff' }]}>
-      <Text style={[globalStyles.title, { color: '#000' }]}>🌤 Weather App</Text>
+    <ScrollView contentContainerStyle={globalStyles.container} keyboardShouldPersistTaps="handled">
+      <Text style={globalStyles.title}>🌤 WeatherGuide</Text>
 
-      <View style={{ width: '80%' }}>
+      <View style={{ width: '100%', maxWidth: 400 }}>
         <TextInput
-          style={[
-            globalStyles.input,
-            {
-              backgroundColor: '#f0f0f0',
-              color: '#000',
-              borderColor: '#ccc',
-            },
-          ]}
-          placeholder="Введите город"
+          style={globalStyles.input}
+          placeholder="Wpisz nazwę miasta"
           placeholderTextColor="#666"
           value={cityName}
           onChangeText={setCityName}
@@ -142,24 +138,30 @@ const HomeScreen = () => {
         />
 
         {inputFocused && cityName.trim().length > 0 && filteredHistory.length > 0 && (
-          <View style={[globalStyles.dropdown, { backgroundColor: '#fff' }]}>
+          <View style={globalStyles.dropdown}>
             {filteredHistory.map((city, index) => (
               <TouchableOpacity key={index} onPress={() => handleSelectFromHistory(city)}>
-                <Text style={[globalStyles.historyItem, { color: '#000' }]}>{city}</Text>
+                <Text style={globalStyles.historyItem}>{city}</Text>
               </TouchableOpacity>
             ))}
           </View>
         )}
       </View>
 
-      <Button title="Найти" onPress={handleCitySearch} />
-      <View style={{ height: 20 }} />
-      <Button title="Обновить по геолокации" onPress={fetchWeather} />
+      <TouchableOpacity style={globalStyles.button} onPress={handleCitySearch}>
+        <Text style={globalStyles.buttonText}>🔍 Szukaj</Text>
+      </TouchableOpacity>
 
-      {loading && (
-        <ActivityIndicator size="large" color="#007aff" style={{ marginTop: 20 }} />
-      )}
-    </View>
+      <TouchableOpacity style={globalStyles.button} onPress={fetchWeather}>
+        <Text style={globalStyles.buttonText}>📍 Aktualizuj lokalizację</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate('Map')}>
+        <Text style={globalStyles.buttonText}>🗺 Mapa opadów</Text>
+      </TouchableOpacity>
+
+      {loading && <ActivityIndicator size="large" color="#007aff" style={{ marginTop: 20 }} />}
+    </ScrollView>
   );
 };
 

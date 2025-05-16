@@ -9,12 +9,12 @@ const FORECAST_KEY = 'FORECAST_DATA';
 export const getWeather = async () => {
   try {
     const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') throw new Error('Permission denied');
+    if (status !== 'granted') throw new Error('Odmowa dostępu');
 
     const location = await Location.getCurrentPositionAsync({});
     const { latitude, longitude } = location.coords;
 
-    const currentUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${OPEN_WEATHER_API_KEY}&units=metric&lang=ru`;
+    const currentUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${OPEN_WEATHER_API_KEY}&units=metric&lang=pl`;
     const currentRes = await axios.get(currentUrl);
 
     const current = {
@@ -26,7 +26,7 @@ export const getWeather = async () => {
 
     await AsyncStorage.setItem(CURRENT_KEY, JSON.stringify(current));
 
-    const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${OPEN_WEATHER_API_KEY}&units=metric&lang=ru`;
+    const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${OPEN_WEATHER_API_KEY}&units=metric&lang=pl`;
     const forecastRes = await axios.get(forecastUrl);
 
     const forecastList = forecastRes.data.list.map((entry: any) => ({
@@ -40,13 +40,13 @@ export const getWeather = async () => {
 
     return { current, forecast: forecastList };
   } catch (error) {
-    console.error('Ошибка загрузки погоды:', error);
+    console.error('Błąd ładowania pogody:', error);
 
     const current = await AsyncStorage.getItem(CURRENT_KEY);
     const forecast = await AsyncStorage.getItem(FORECAST_KEY);
 
     if (current && forecast) {
-      console.warn('⚠️ Используются кешированные данные');
+      console.warn('⚠️ Używane są dane z pamięci podręcznej');
       return {
         current: JSON.parse(current),
         forecast: JSON.parse(forecast),
@@ -59,7 +59,7 @@ export const getWeather = async () => {
 
 export const getWeatherByCity = async (city: string) => {
   try {
-    const currentUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${OPEN_WEATHER_API_KEY}&units=metric&lang=ru`;
+    const currentUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${OPEN_WEATHER_API_KEY}&units=metric&lang=pl`;
     const currentRes = await axios.get(currentUrl);
 
     const current = {
@@ -69,7 +69,7 @@ export const getWeatherByCity = async (city: string) => {
       icon: currentRes.data.weather[0].icon,
     };
 
-    const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${OPEN_WEATHER_API_KEY}&units=metric&lang=ru`;
+    const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${OPEN_WEATHER_API_KEY}&units=metric&lang=pl`;
     const forecastRes = await axios.get(forecastUrl);
 
     const forecastList = forecastRes.data.list.map((entry: any) => ({
@@ -81,7 +81,7 @@ export const getWeatherByCity = async (city: string) => {
 
     return { current, forecast: forecastList };
   } catch (error) {
-    console.error('Ошибка загрузки погоды по городу:', error);
+    console.error('Błąd ładowania pogody dla miasta:', error);
     throw error;
   }
 };

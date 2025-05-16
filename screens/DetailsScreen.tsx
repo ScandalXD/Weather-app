@@ -1,9 +1,16 @@
 import React, { useState } from 'react';
-import {View, Text, Image, ScrollView, RefreshControl, Alert} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  RefreshControl,
+  Alert,
+} from 'react-native';
 import { useWeather } from '../contexts/WeatherContext';
 import ForecastList from '../components/ForecastList';
-import { getWeather, getWeatherByCity } from '../services/weatherService';
 import FiveDayForecastBlock from '../components/FiveDayForecastBlock';
+import { getWeather, getWeatherByCity } from '../services/weatherService';
 import { globalStyles } from '../style/styles';
 
 const DetailsScreen = () => {
@@ -28,16 +35,18 @@ const DetailsScreen = () => {
         lastCity: weather?.lastCity,
       });
     } catch (error) {
-      Alert.alert('Ошибка', 'Не удалось обновить данные.');
+      Alert.alert('Błąd', 'Nie udało się zaktualizować danych.');
     } finally {
       setRefreshing(false);
     }
   };
 
-  if (!weather) {
+  if (!weather || !weather.forecast) {
     return (
       <View style={[globalStyles.centered, { backgroundColor: '#f0f8ff' }]}>
-        <Text style={[globalStyles.message, { color: '#888' }]}>Нет данных о погоде</Text>
+        <Text style={[globalStyles.message, { color: '#888' }]}>
+          Brak danych pogodowych
+        </Text>
       </View>
     );
   }
@@ -48,28 +57,27 @@ const DetailsScreen = () => {
     <ScrollView
       contentContainerStyle={[globalStyles.detailsContainer, { backgroundColor: '#f0f8ff' }]}
       refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-          tintColor="#000"
-        />
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
       <Text style={[globalStyles.city, { color: '#000' }]}>{weather.city}</Text>
       <Image source={{ uri: iconUrl }} style={globalStyles.icon} />
-      <Text style={[globalStyles.temp, { color: '#ff8c00' }]}> {Math.round(weather.temperature)}°C</Text>
-      <Text style={[globalStyles.description, { color: '#000' }]}>{weather.description}</Text>
+      <Text style={[globalStyles.temp, { color: '#ff8c00' }]}>
+        {Math.round(weather.temperature)}°C
+      </Text>
+      <Text style={[globalStyles.description, { color: '#000' }]}>
+        {weather.description}
+      </Text>
 
-      {weather.forecast && weather.forecast.length > 0 && (
-    <>
       <Text style={[globalStyles.subtitle, { color: '#000' }]}>
-          Прогноз по часам
+        Prognoza godzinowa
       </Text>
       <ForecastList data={weather.forecast.slice(0, 8)} />
 
+      <Text style={[globalStyles.subtitle, { color: '#000', marginTop: 30 }]}>
+        Prognoza 5-dniowa
+      </Text>
       <FiveDayForecastBlock forecast={weather.forecast} />
-    </>
-      )}
     </ScrollView>
   );
 };
