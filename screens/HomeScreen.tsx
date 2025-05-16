@@ -153,7 +153,7 @@ const HomeScreen = () => {
       </TouchableOpacity>
 
       <TouchableOpacity style={globalStyles.button} onPress={fetchWeather}>
-        <Text style={globalStyles.buttonText}>📍 Aktualizuj lokalizację</Text>
+        <Text style={globalStyles.buttonText}>📍 Pogoda po lokalizacji</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate('Map')}>
