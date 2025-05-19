@@ -16,7 +16,7 @@ export const addCityToHistory = async (city: string) => {
 
     await AsyncStorage.setItem(HISTORY_KEY, JSON.stringify(history));
   } catch (e) {
-    console.log('Ошибка сохранения истории:', e);
+    console.log('Błąd podczas zapisywania historii:', e);
   }
 };
 
@@ -25,7 +25,7 @@ export const getCityHistory = async (): Promise<string[]> => {
     const raw = await AsyncStorage.getItem(HISTORY_KEY);
     return raw ? JSON.parse(raw) : [];
   } catch (e) {
-    console.log('Ошибка чтения истории:', e);
+    console.log('Błąd podczas czytania historii:', e);
     return [];
   }
 };
