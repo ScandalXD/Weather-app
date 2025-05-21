@@ -1,1 +1,3 @@
-export const OPEN_WEATHER_API_KEY = 'b45eef7a08da5b0a8298c29507966176';
+import { OPENWEATHER_API_KEY } from '@env';
+
+export const API_KEY = OPENWEATHER_API_KEY;
