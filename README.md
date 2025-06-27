@@ -12,7 +12,6 @@ Numer indeksu: 44074
 - 🌍 Pogoda dla **bieżącej lokalizacji**
 - 🔎 **Wyszukiwanie** pogody dla dowolnego miasta
 - 📅 **Prognoza na 5 dni**
-- 🌙 Przełącznik **jasny/ciemny motyw**
 - 🔄 **Odświeżanie przez przeciągnięcie**
 - 🕘 **Historia wyszukiwań**
 
